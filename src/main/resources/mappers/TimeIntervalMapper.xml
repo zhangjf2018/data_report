@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.data.report.mapper.TimeIntervalMapper">
+    <resultMap id="BaseResultMap" type="com.data.report.entity.TimeInterval">
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="bizno" jdbcType="VARCHAR" property="bizNo"/>
+        <result column="time_interval" jdbcType="VARCHAR" property="timeInterval"/>
+        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="transtype" jdbcType="VARCHAR" property="transType"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+
+    </resultMap>
+    <sql id="BaseColumnList">
+        date, bizno, time_interval, product_id, transtype, count
+    </sql>
+
+    <select id="findTimeSt" resultMap="BaseResultMap">
+        select
+          time_interval, sum(count) as count, count(time_interval) as countInterval
+        from time_interval_tj
+        where
+            bizno=#{bizno} and date in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        group by time_interval;
+    </select>
+
+    <select id="findElementSt" resultMap="BaseResultMap">
+        select
+        time_interval, left(product_id,1) as product_id, sum(count) as count, count(time_interval) as countInterval, avg(count) as countAvg
+        from time_interval_tj
+        where
+        bizno=#{bizno} and left(product_id,1)=#{element}
+        <if test="transtype!=null and transtype != '' ">
+            and transtype=#{transtype}
+        </if>
+        and date in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by time_interval;
+    </select>
+
+    <select id="findElementDaySt" resultMap="BaseResultMap">
+        select
+          date, left(product_id,1) as product_id, sum(count) as count
+        from time_interval_tj
+        where
+          bizno=#{bizno} and left(product_id,1)=#{element}
+            <if test="transtype!=null and transtype != '' ">
+                and transtype=#{transtype}
+            </if>
+             and date in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        group by date;
+    </select>
+
+</mapper>

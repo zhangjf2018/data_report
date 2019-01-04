@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.data.report.mapper.BankMapper">
+    <resultMap id="BaseResultMap" type="com.data.report.entity.Bank">
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="bizno" jdbcType="VARCHAR" property="bizNo"/>
+        <result column="bankid" jdbcType="VARCHAR" property="bankId"/>
+        <result column="bankname" jdbcType="VARCHAR" property="bankName"/>
+        <result column="total_count" jdbcType="INTEGER" property="totalCount"/>
+        <result column="suc_count" jdbcType="INTEGER" property="sucCount"/>
+        <result column="pass_count" jdbcType="INTEGER" property="passCount"/>
+    </resultMap>
+    <sql id="BaseColumnList">
+        date, bizno, bankid, bankname, total_count, suc_count, pass_count
+    </sql>
+
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="BaseColumnList"/>
+        from bank_tj
+    </select>
+
+    <select id="findSuccTrans" resultMap="BaseResultMap">
+        select
+          date,sum(suc_count) as suc_count, sum(total_count) as total_count,
+          sum(pass_count) as pass_count
+        from bank_tj
+        where
+          bizno=#{bizno} and date in
+          <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        group by date;
+    </select>
+
+    <select id="findBankSt" resultMap="BaseResultMap">
+
+        select
+         right(bankid, 3) as bankid, sum(suc_count) as suc_count, sum(total_count) as total_count,
+         sum(pass_count) as pass_count
+        from bank_tj
+        where
+            bizno=#{bizno} and date in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        group by right(bankid, 3);
+    </select>
+
+</mapper>

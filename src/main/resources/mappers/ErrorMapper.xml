@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.data.report.mapper.ErrorMapper">
+    <resultMap id="BaseResultMap" type="com.data.report.entity.Error">
+        <result column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="bizno" jdbcType="VARCHAR" property="bizNo"/>
+        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="transtype" jdbcType="VARCHAR" property="transType"/>
+        <result column="errcode" jdbcType="INTEGER" property="errCode"/>
+        <result column="message" jdbcType="INTEGER" property="message"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+    </resultMap>
+    <sql id="BaseColumnList">
+        date, bizno, product_id, transtype, errcode, message, count
+    </sql>
+
+    <select id="findElementSt" resultMap="BaseResultMap">
+        select
+          left(product_id,1) as product_id, sum(count) as count
+        from error_tj
+        where
+            bizno=#{bizno}
+            and left(product_id,1)=#{element}
+            <if test="transtype!=null and transtype != '' ">
+                and transtype=#{transtype}
+            </if>
+            and date in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        group by left(product_id,1)
+        order by count desc;
+    </select>
+
+    <select id="findElementErrorSt" resultMap="BaseResultMap">
+        select
+          sum(count) as count , errcode, message
+        from error_tj
+        where
+            bizno=#{bizno} and left(product_id,1)=#{element} and errcode != "00000"
+            <if test="transtype!=null and transtype != '' ">
+                and transtype=#{transtype}
+            </if>
+            and date in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        group by left(product_id,1),errcode
+        order by count asc;
+    </select>
+
+</mapper>
