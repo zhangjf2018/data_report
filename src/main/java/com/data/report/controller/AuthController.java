@@ -302,7 +302,6 @@ public class AuthController {
         dates.add("20181111");
         dates.add("20181112");
         dates.add("20181113");*/
-
         List<String> dates = DateUtils.GetDates(timeStart,timeEnd);
 
         Map<String,Object> data = new HashMap<>();
