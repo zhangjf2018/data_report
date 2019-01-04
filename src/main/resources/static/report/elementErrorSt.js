@@ -18,7 +18,7 @@ var optionElementErrorSt3 = {
     },
     grid: {
         left: '3%',
-        right: '4%',
+        right: '20%',
         bottom: '3%',
         containLabel: true
     },
@@ -102,6 +102,11 @@ var optionElementErrorSt4 = {
         subtext:'',
         //副标题文本样式
         subtextStyle:{}
+    },grid: {
+        left: '3%',
+        right: '20%',
+        bottom: '3%',
+        containLabel: true
     },
     tooltip: {
         trigger: 'axis',
@@ -111,12 +116,6 @@ var optionElementErrorSt4 = {
     },
     legend: {
         data: []
-    },
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
     },
     xAxis: {
         type: 'value',
@@ -210,7 +209,7 @@ var optionElementErrorSt6 = {
     },
     grid: {
         left: '3%',
-        right: '4%',
+        right: '20%',
         bottom: '3%',
         containLabel: true
     },
